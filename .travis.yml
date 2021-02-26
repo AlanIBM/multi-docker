@@ -1,0 +1,23 @@
+language: generic
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t alanibm/react-test -f ./client/Dockerfile.dev ./client
+
+# test running area, must all return value of zero
+script:
+  - docker run -e CI=true alanibm/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t alanibm/multi-client ./client
+  - docker build -t alanibm/multi-nginx ./nginx
+  - docker build -t alanibm/multi-server ./server
+  - docker build -t alanibm/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take those images and push to Docker hub
+  - docker push alanibm/multi-client
+  - docker push alanibm/multi-nginx
+  - docker push alanibm/multi-server
+  - docker push alanibm/multi-worker
