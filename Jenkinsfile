@@ -21,15 +21,6 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
-            steps {
-                timeout(time: 3, unit: 'MINUTES') {
-                    retry(5) {
-                        sh './flakey-deploy.sh'
-                    }
-                }
-            }
-        }
         stage('Test') {
             steps {
                 sh 'echo "Fail!"; exit 1'
