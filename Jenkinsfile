@@ -13,13 +13,11 @@ pipeline {
         stage('Deploy') {
             steps {
                 retry(3) {
-                    git add --chmod=+x "flakey-deploy.sh"
-                    sh './flakey-deploy.sh'
+                    bash './flakey-deploy.sh'
                 }
 
                 timeout(time: 3, unit: 'MINUTES') {
-                    git add --chmod=+x "health-check.sh"
-                    sh './health-check.sh'
+                    bash './health-check.sh'
                 }
             }
         }
